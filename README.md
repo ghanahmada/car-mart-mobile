@@ -14,7 +14,7 @@ Di sisi lain, **Stateful Widget** adalah tipe widget yang dapat mengalami peruba
 
 Sebagai contoh penggunaan Stateful Widget, Anda dapat membayangkan sebuah formulir pengguna yang mengubah tampilan berdasarkan input yang diberikan oleh pengguna, atau sebuah daftar item yang perlu diperbarui secara dinamis berdasarkan perubahan data yang diterima dari sumber eksternal. Dalam kedua contoh tersebut, Stateful Widget memungkinkan pengembang untuk mengelola dan menanggapi perubahan dengan fleksibilitas, memastikan bahwa tampilan aplikasi selalu up-to-date dan sesuai dengan data yang relevan.
 
-### 2. Apa perbedaan utama antara stateless dan stateful widget dalam konteks pengembangan aplikasi Flutter?
+### 2. Sebutkan seluruh widget yang kamu gunakan untuk menyelesaikan tugas ini dan jelaskan fungsinya masing-masing.
 
 Di dalam berkas `main.dart`, aplikasi Flutter dibangun menggunakan `MaterialApp` sebagai landasan utama. `MaterialApp` bertanggung jawab mengatur tema dan navigasi global aplikasi. `ThemeData` digunakan untuk memberikan tema yang seragam di seluruh aplikasi. `ColorScheme.fromSeed` digunakan untuk menghasilkan skema warna berdasarkan warna benih yang diberikan. Hal ini menciptakan tampilan yang konsisten dan estetis secara visual.
 
