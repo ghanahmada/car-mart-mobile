@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:car_mart_mobile/widgets/left_drawer.dart';
+import 'package:car_mart_mobile/screens/carlist_form.dart';
+import 'package:car_mart_mobile/widgets/car_card.dart';
+
 
 class MyHomePage extends StatelessWidget {
-    MyHomePage({Key? key}) : super(key: key);
-    final List<ShopItem> items = [
-    ShopItem("Lihat Item", Icons.checklist, Color(0xFF006CA5)),
-    ShopItem("Tambah Item", Icons.add_shopping_cart, Color(0xFF0496C7)),
-    ShopItem("Logout", Icons.logout, Color(0xFF04BADE)),
+      MyHomePage({Key? key}) : super(key: key);
+      final List<CarItem> items = [
+      CarItem("Lihat Mobil", Icons.checklist, Color(0xFF006CA5)),
+      CarItem("Tambah Mobil", Icons.add_shopping_cart, Color(0xFF0496C7)),
+      CarItem("Logout", Icons.logout, Color(0xFF04BADE)),
   ];
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -16,9 +20,6 @@ class MyHomePage extends StatelessWidget {
   // case the title) provided by the parent (in this case the App widget) and
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
-
-  
-
 
     @override
     Widget build(BuildContext context) {
@@ -33,7 +34,10 @@ class MyHomePage extends StatelessWidget {
                 title: const Text(
                 'Car Mart',
                 ),
+                backgroundColor: Colors.indigo,
+                foregroundColor: Colors.white,
             ),
+            drawer: const LeftDrawer(),
             body: SingleChildScrollView(
                 // Widget wrapper yang dapat discroll
                 child: Padding(
@@ -45,7 +49,7 @@ class MyHomePage extends StatelessWidget {
                         padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
                         // Widget Text untuk menampilkan tulisan dengan alignment center dan style yang sesuai
                         child: Text(
-                        'Car Mart', // Text yang menandakan toko
+                        'Car Shop', // Text yang menandakan toko
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 30,
@@ -62,9 +66,9 @@ class MyHomePage extends StatelessWidget {
                         mainAxisSpacing: 10,
                         crossAxisCount: 3,
                         shrinkWrap: true,
-                        children: items.map((ShopItem item) {
+                        children: items.map((CarItem item) {
                         // Iterasi untuk setiap item
-                        return ShopCard(item);
+                        return CarCard(item);
                         }).toList(),
                     ),
                     ],
@@ -74,54 +78,4 @@ class MyHomePage extends StatelessWidget {
         );
     }
 }
-class ShopItem {
-  final String name;
-  final IconData icon;
-  final Color color;
 
-  ShopItem(this.name, this.icon, this.color);
-}
-class ShopCard extends StatelessWidget {
-  final ShopItem item;
-
-  const ShopCard(this.item, {super.key}); // Constructor
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: item.color,
-      child: InkWell(
-        // Area responsive terhadap sentuhan
-        onTap: () {
-          // Memunculkan SnackBar ketika diklik
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(
-                content: Text("Kamu telah menekan tombol ${item.name}!")));
-        },
-        child: Container(
-          // Container untuk menyimpan Icon dan Text
-          padding: const EdgeInsets.all(8),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  item.icon,
-                  color: Colors.white,
-                  size: 30.0,
-                ),
-                const Padding(padding: EdgeInsets.all(3)),
-                Text(
-                  item.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
