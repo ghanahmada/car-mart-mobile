@@ -7,9 +7,9 @@ import 'package:car_mart_mobile/widgets/car_card.dart';
 class MyHomePage extends StatelessWidget {
       MyHomePage({Key? key}) : super(key: key);
       final List<CarItem> items = [
-      CarItem("Lihat Mobil", Icons.checklist, Color(0xFF006CA5)),
-      CarItem("Tambah Mobil", Icons.add_shopping_cart, Color(0xFF0496C7)),
-      CarItem("Logout", Icons.logout, Color(0xFF04BADE)),
+      CarItem(1, "Lihat Mobil", Icons.checklist, Color(0xFF006CA5)),
+      CarItem(2, "Tambah Mobil", Icons.add_shopping_cart, Color(0xFF0496C7)),
+      CarItem(3, "Logout", Icons.logout, Color(0xFF04BADE)),
   ];
 
   // This widget is the home page of your application. It is stateful, meaning

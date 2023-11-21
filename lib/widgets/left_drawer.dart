@@ -1,3 +1,4 @@
+import 'package:car_mart_mobile/screens/list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:car_mart_mobile/screens/menu.dart';
 import 'package:car_mart_mobile/screens/carlist_form.dart';
@@ -42,6 +43,7 @@ class LeftDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.home_outlined),
             title: const Text('Halaman Utama'),
+            // title: const Text('Halaman Utama'),
             // Bagian redirection ke MyHomePage
             onTap: () {
               Navigator.pushReplacement(
@@ -79,7 +81,7 @@ class LeftDrawer extends StatelessWidget {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => DataMobilPage(),
+                    builder: (context) => ProductPage(),
                   ));
             },
           ),

@@ -1,7 +1,13 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+import 'package:car_mart_mobile/screens/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:car_mart_mobile/widgets/left_drawer.dart';
 import 'package:car_mart_mobile/widgets/globals.dart' as globals;
 import 'package:car_mart_mobile/screens/data_mobil.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 
 class CarFormPage extends StatefulWidget {
     const CarFormPage({super.key});
@@ -12,36 +18,46 @@ class CarFormPage extends StatefulWidget {
 
 class Car {
   late String name;
+  late int price;
   late int amount;
+  late String category;
   late String description;
 
   Car(
-      {required this.name, required this.amount, required this.description});
+      {required this.name, 
+      required this.price,
+      required this.amount,
+      required this.category, 
+      required this.description});
 }
 
 class _CarFormPageState extends State<CarFormPage> {
     final _formKey = GlobalKey<FormState>();
     String _name = "";
     int _amount = 0;
+    int _price = 0;
+    String _category = "";
     String _description = "";
 
-    onPressed(BuildContext context) {
-    var data =
-      Car(name: _name, amount: _amount, description: _description);
-    globals.listMobil.add(data);
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const DataMobilPage()),
-    );
-  }
+  //   onPressed(BuildContext context) {
+  //   var data =
+  //     Car(name: _name, price: _price, amount: _amount, category: _category, description: _description);
+  //   globals.listMobil.add(data);
+  //   Navigator.pushReplacement(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => const DataMobilPage()),
+  //   );
+  // }
 
     @override
     Widget build(BuildContext context) {
+        final request = context.watch<CookieRequest>();
+
         return Scaffold(
         appBar: AppBar(
           title: const Center(
             child: Text(
-              'Form Tambah Produk',
+              'Add New Item',
             ),
           ),
           backgroundColor: Colors.indigo,
@@ -59,8 +75,8 @@ class _CarFormPageState extends State<CarFormPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
                     decoration: InputDecoration(
-                      hintText: "Nama Mobil",
-                      labelText: "Nama Mobil",
+                      hintText: "Name",
+                      labelText: "Name",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       ),
@@ -72,7 +88,7 @@ class _CarFormPageState extends State<CarFormPage> {
                     },
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
-                        return "Nama tidak boleh kosong!";
+                        return "Name cannot be empty!";
                       }
                       return null;
                     },
@@ -82,8 +98,35 @@ class _CarFormPageState extends State<CarFormPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
                     decoration: InputDecoration(
-                      hintText: "Jumlah",
-                      labelText: "Jumlah",
+                      hintText: "Price",
+                      labelText: "Price",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                    ),
+                    // TODO: Tambahkan variabel yang sesuai
+                    onChanged: (String? value) {
+                      setState(() {
+                        _price = int.parse(value!);
+                      });
+                    },
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return "Price cannot be empty!";
+                      }
+                      if (int.tryParse(value) == null) {
+                        return "Price must be numerical!";
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: "Amout",
+                      labelText: "Amout",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       ),
@@ -96,10 +139,10 @@ class _CarFormPageState extends State<CarFormPage> {
                     },
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
-                        return "Jumlah tidak boleh kosong!";
+                        return "Amount cannot be empty!";
                       }
                       if (int.tryParse(value) == null) {
-                        return "Jumlah harus berupa angka!";
+                        return "Amount must be numerical!";
                       }
                       return null;
                     },
@@ -109,8 +152,32 @@ class _CarFormPageState extends State<CarFormPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
                     decoration: InputDecoration(
-                      hintText: "Deskripsi",
-                      labelText: "Deskripsi",
+                      hintText: "Category",
+                      labelText: "Category",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                    ),
+                    onChanged: (String? value) {
+                      setState(() {
+                        // TODO: Tambahkan variabel yang sesuai
+                        _category = value!;
+                      });
+                    },
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return "Category cannot be empty!";
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: "Description",
+                      labelText: "Description",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       ),
@@ -123,7 +190,7 @@ class _CarFormPageState extends State<CarFormPage> {
                     },
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
-                        return "Deskripsi tidak boleh kosong!";
+                        return "Description cannot be empty!";
                       }
                       return null;
                     },
@@ -138,37 +205,56 @@ class _CarFormPageState extends State<CarFormPage> {
                         backgroundColor:
                             MaterialStateProperty.all(Colors.indigo),
                       ),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: const Text('Mobil berhasil tersimpan'),
-                                  content: SingleChildScrollView(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text('Nama: $_name'),
-                                        Text('Jumlah: $_amount'),
-                                        Text('Deskripsi: $_description'),
-                                      ],
-                                    ),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      child: const Text('OK'),
-                                      onPressed: () {
-                                        onPressed(context);
-                                      },
-                                    ),
-                                  ],
+                      onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                              // Kirim ke Django dan tunggu respons
+                              // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
+                              // final response = await request.postJson(
+                              // "http://localhost:8000/create-flutter/",
+                              // jsonEncode(<String, String>{
+                              //     'name': _name,
+                              //     'price': _price.toString(),
+                              //     'amount': _amount.toString(),
+                              //     'category': _category,
+                              //     'description': _description,
+                              //     // TODO: Sesuaikan field data sesuai dengan aplikasimu
+                              // }));
+                              final http.Response response = await http.post(
+                                  Uri.parse("http://localhost:8000/create-flutter/"),
+                                  headers: <String, String>{
+                                    'Content-Type': 'application/json',
+                                  },
+                                  body: jsonEncode(<String, String>{
+                                    'name': _name,
+                                    'price': _price.toString(),
+                                    'amount': _amount.toString(),
+                                    'category': _category,
+                                    'description': _description,
+                                  }),
                                 );
-                              },
-                            );
+                              if (response.statusCode == 200) {
+                              // Successful response
+                              final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+                              if (responseBody['status'] == 'success') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Produk baru berhasil disimpan!"),
+                                  ),
+                                );
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => MyHomePage()),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Terdapat kesalahan, silakan coba lagi."),
+                                  ),
+                                );
+                              }
+                            }
                           }
-                        _formKey.currentState!.reset();
                       },
                       child: const Text(
                         "Save",
